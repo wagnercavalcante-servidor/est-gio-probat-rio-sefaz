@@ -18,6 +18,29 @@ export function dataAvaliacaoServidor(datas: ServidorBase["datas_avaliacoes"], n
   return dataServidorBr(typeof data === "string" ? data : null);
 }
 
+function dataIsoValida(valor: unknown): string | null {
+  if (typeof valor !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(valor)) return null;
+  const data = new Date(`${valor}T00:00:00Z`);
+  return Number.isNaN(data.getTime()) || data.toISOString().slice(0, 10) !== valor ? null : valor;
+}
+
+export function periodoAvaliacaoServidor(
+  servidor: Pick<ServidorBase, "data_inicio_exercicio" | "datas_avaliacoes"> | null,
+  numero: string,
+): { periodoInicio: string; periodoFim: string } {
+  if (!servidor || !/^[1-6]$/.test(numero)) return { periodoInicio: "", periodoFim: "" };
+  const datas = Array.isArray(servidor.datas_avaliacoes) ? servidor.datas_avaliacoes : [];
+  const indice = Number(numero) - 1;
+  const fim = dataIsoValida(datas[indice]);
+  let inicio = dataIsoValida(indice === 0 ? servidor.data_inicio_exercicio : datas[indice - 1]);
+  if (inicio && indice > 0) {
+    const seguinte = new Date(`${inicio}T00:00:00Z`);
+    seguinte.setUTCDate(seguinte.getUTCDate() + 1);
+    inicio = seguinte.toISOString().slice(0, 10);
+  }
+  return { periodoInicio: dataServidorBr(inicio), periodoFim: dataServidorBr(fim) };
+}
+
 export function linhaServidor(s: ServidorBase): string[] {
   const datas = Array.isArray(s.datas_avaliacoes) ? s.datas_avaliacoes : [];
   return [s.orgao, s.nome, s.matricula, dataServidorBr(s.data_inicio_exercicio), s.cargo ?? "",

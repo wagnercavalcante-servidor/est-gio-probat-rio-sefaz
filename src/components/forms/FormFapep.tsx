@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { REQUISITOS, PONTUACAO_MAXIMA, formatarData, somaNotas } from "@/lib/formularios";
 import { useEtapaVigente } from "@/hooks/useEtapaVigente";
 import { dentroDaJanela, formatarDataBr } from "@/lib/calendario";
-import { dataAvaliacaoServidor } from "@/lib/servidores";
+import { dataAvaliacaoServidor, periodoAvaliacaoServidor } from "@/lib/servidores";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const estadoInicial = {
@@ -31,6 +31,7 @@ export function FormFapep({ tipo }: { tipo: "FAPEP1" | "FAPEP2" }) {
     setD((anterior) => ({
       ...anterior,
       numeroAvaliacao: numero,
+      ...periodoAvaliacaoServidor(servidorSelecionado, numero),
       avaliador: {
         ...anterior.avaliador,
         data: dataAvaliacaoServidor(servidorSelecionado?.datas_avaliacoes ?? [], numero),
@@ -58,6 +59,7 @@ export function FormFapep({ tipo }: { tipo: "FAPEP1" | "FAPEP2" }) {
     setServidorSelecionado(s);
     setD((a) => ({
       ...a,
+      ...periodoAvaliacaoServidor(s, a.numeroAvaliacao),
       avaliador: { ...a.avaliador, data: dataAvaliacaoServidor(s.datas_avaliacoes, a.numeroAvaliacao) },
       identificacao: {
         ...a.identificacao,
