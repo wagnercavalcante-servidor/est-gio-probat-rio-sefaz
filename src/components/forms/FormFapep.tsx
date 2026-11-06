@@ -105,7 +105,7 @@ export function FormFapep({ tipo }: { tipo: "FAPEP1" | "FAPEP2" }) {
         </Bloco>
 
         <Bloco titulo={tipo === "FAPEP1" ? "Dados da avaliação (chefe imediato)" : "Dados da avaliação (par)"}>
-          <div className="grid gap-3 sm:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2">
             <div>
               <Label htmlFor={`numero-avaliacao-${tipo}`} className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Número da avaliação</Label>
               <Select value={d.numeroAvaliacao} onValueChange={selecionarNumero}>
@@ -118,6 +118,16 @@ export function FormFapep({ tipo }: { tipo: "FAPEP1" | "FAPEP2" }) {
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+            <div>
+              <Label htmlFor={`data-avaliacao-${tipo}`} className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Data da avaliação</Label>
+              <Input
+                id={`data-avaliacao-${tipo}`}
+                value={d.avaliador.data}
+                onChange={(e) => atualizar("avaliador.data", e.target.value)}
+                placeholder="dd/mm/aaaa"
+                className="mt-1"
+              />
             </div>
             <CampoTexto rotulo="Período de" valor={d.periodoInicio} aoMudar={(v) => atualizar("periodoInicio", v)} placeholder="dd/mm/aaaa" />
             <CampoTexto rotulo="Período até" valor={d.periodoFim} aoMudar={(v) => atualizar("periodoFim", v)} placeholder="dd/mm/aaaa" />
@@ -194,7 +204,6 @@ export function FormFapep({ tipo }: { tipo: "FAPEP1" | "FAPEP2" }) {
               />
               <CampoTexto rotulo="Cargo/função" valor={d.avaliador.cargo} aoMudar={(v) => atualizar("avaliador.cargo", v)} />
               <CampoTexto rotulo="Local" valor={d.avaliador.local} aoMudar={(v) => atualizar("avaliador.local", v)} />
-              <CampoTexto rotulo="Data" valor={d.avaliador.data} aoMudar={(v) => atualizar("avaliador.data", v)} placeholder="dd/mm/aaaa" />
             </div>
           </div>
         </Bloco>
