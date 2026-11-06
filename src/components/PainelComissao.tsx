@@ -9,7 +9,6 @@ import { DocumentoFormulario } from "@/components/DocumentoFormulario";
 import { TIPOS } from "@/lib/formularios";
 import { AssinaturaEletronica } from "@/components/AssinaturaEletronica";
 import { useAssinaturas } from "@/hooks/useAssinaturas";
-import { AlternarTestes } from "@/components/AlternarTestes";
 import { COLUNAS_FORMULARIO, ROTULO_STATUS, validarAcao, type RegistroFormulario } from "@/lib/fluxo";
 
 const homologacaoInicial = {
@@ -36,18 +35,17 @@ export function PainelComissao() {
   const [h, setH] = useState({ ...homologacaoInicial });
   const [recurso, setRecurso] = useState<RegistroFormulario | null>(null);
   const [salvando, setSalvando] = useState(false);
-  const [incluirTestes, setIncluirTestes] = useState(false);
   const { assinaturas, recarregar } = useAssinaturas(ativo?.id);
 
   const carregar = useCallback(async () => {
     setCarregando(true);
     await supabase.rpc("expirar_prazos_avaliacao" as never);
-    let consulta = supabase
+    const consulta = supabase
       .from("formularios")
       .select(COLUNAS_FORMULARIO)
       .in("status", ["aguardando_homologacao", "recurso_apresentado"])
+      .eq("teste", false)
       .order("created_at", { ascending: false });
-    if (!incluirTestes) consulta = consulta.eq("teste", false);
     const { data, error } = await consulta;
     setCarregando(false);
     if (error) {
@@ -55,7 +53,7 @@ export function PainelComissao() {
       return;
     }
     setRegistros((data ?? []) as unknown as RegistroFormulario[]);
-  }, [incluirTestes]);
+  }, []);
 
   useEffect(() => {
     void carregar();
@@ -204,7 +202,6 @@ export function PainelComissao() {
 
   return (
     <div className="space-y-4">
-      <AlternarTestes valor={incluirTestes} aoMudar={setIncluirTestes} />
       {carregando ? (
         <p className="flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="size-4 animate-spin" /> Carregando…

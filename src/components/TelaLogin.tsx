@@ -34,11 +34,28 @@ export function TelaLogin() {
   const [carregando, setCarregando] = useState(false);
 
   // PROVISÓRIO: login suspenso — entra automaticamente com a conta de acesso provisório (Administrador).
+  // Se a conta ainda não existir neste banco, ela é criada na hora.
   useEffect(() => {
-    void supabase.auth.signInWithPassword({
-      email: "acesso.provisorio@estagioprobatorio.app",
-      password: "Provisorio#2026",
-    });
+    void (async () => {
+      const credenciais = {
+        email: "acesso.provisorio@estagioprobatorio.app",
+        password: "Provisorio#2026",
+      };
+      const { error } = await supabase.auth.signInWithPassword(credenciais);
+      if (!error) return;
+      const { error: erroCadastro } = await supabase.auth.signUp({
+        ...credenciais,
+        options: {
+          data: {
+            nome_completo: "Acesso Provisório",
+            perfil: "chefia_imediata",
+            orgao: "SEFAZ",
+            matricula: "",
+          },
+        },
+      });
+      if (!erroCadastro) await supabase.auth.signInWithPassword(credenciais);
+    })();
   }, []);
 
   useEffect(() => {

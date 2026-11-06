@@ -7,7 +7,6 @@ import { DocumentoFormulario } from "@/components/DocumentoFormulario";
 import { FormRaep } from "@/components/forms/FormRaep";
 import { baixarPdfPaginaUnica } from "@/lib/pdf";
 import { AssinaturaEletronica } from "@/components/AssinaturaEletronica";
-import { AlternarTestes } from "@/components/AlternarTestes";
 import { useAssinaturas } from "@/hooks/useAssinaturas";
 import { TIPOS } from "@/lib/formularios";
 import {
@@ -21,7 +20,6 @@ import {
 export function PainelServidor({ userId }: { userId: string }) {
   const [registros, setRegistros] = useState<RegistroFormulario[]>([]);
   const [carregando, setCarregando] = useState(true);
-  const [incluirTestes, setIncluirTestes] = useState(false);
   const [selecionado, setSelecionado] = useState<RegistroFormulario | null>(null);
   const [recurso, setRecurso] = useState<RegistroFormulario | null>(null);
   const referencia = useRef<HTMLDivElement>(null);
@@ -30,12 +28,12 @@ export function PainelServidor({ userId }: { userId: string }) {
   const carregar = useCallback(async () => {
     setCarregando(true);
     await supabase.rpc("expirar_prazos_avaliacao" as never);
-    let consulta = supabase
+    const consulta = supabase
       .from("formularios")
       .select(COLUNAS_FORMULARIO)
       .eq("servidor_user_id", userId)
+      .eq("teste", false)
       .order("created_at", { ascending: false });
-    if (!incluirTestes) consulta = consulta.eq("teste", false);
     const { data, error } = await consulta;
     setCarregando(false);
     if (error) {
@@ -43,7 +41,7 @@ export function PainelServidor({ userId }: { userId: string }) {
       return;
     }
     setRegistros((data ?? []) as unknown as RegistroFormulario[]);
-  }, [userId, incluirTestes]);
+  }, [userId]);
 
   useEffect(() => {
     void carregar();
@@ -116,7 +114,6 @@ export function PainelServidor({ userId }: { userId: string }) {
 
   return (
     <div className="space-y-5">
-      <AlternarTestes valor={incluirTestes} aoMudar={setIncluirTestes} />
       {carregando ? (
         <p className="flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="size-4 animate-spin" /> Carregando suas avaliações…
