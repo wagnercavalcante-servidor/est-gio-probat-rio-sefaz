@@ -1,0 +1,2 @@
+ALTER TABLE public.servidores ADD COLUMN IF NOT EXISTS datas_avaliacoes jsonb NOT NULL DEFAULT '[]'::jsonb;
+COMMENT ON COLUMN public.servidores.datas_avaliacoes IS 'Datas das seis avaliações previstas na fonte importada, em ordem, no formato ISO. Não substituem o cronograma administrativo de etapas.';

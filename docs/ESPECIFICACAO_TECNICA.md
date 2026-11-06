@@ -198,7 +198,9 @@ Gerido pela Gestão de Pessoas ou pelo Administrador, define as janelas de abert
 * Aba **Gerenciamento Estágio Probatório** com dados por órgão.
 * Cartões: total de servidores em estágio probatório e quantidade por data de efetivo exercício.
 * Filtros: órgão, data de efetivo exercício e busca por nome, matrícula ou cargo; painel *Detalhamento* com os servidores filtrados.
-* Integração atual com planilha consolidada; recomendada futura integração com o sistema oficial de RH do Estado.
+* Nesta cópia SEFAZ, a tabela enviada **SEFAZ – Servidores efetivos admitidos após 10-03-2025.xlsx** é importada para a base `servidores`, compartilhada pelo preenchimento dos instrumentos FAPEP 1/2, FAFEP, FADA e busca no RAEP e pelo gerenciamento. São quatro servidores, identificados pela matrícula; importações atualizam a mesma matrícula sem duplicar registros.
+* O detalhamento mostra órgão, nome, matrícula, admissão, cargo e as seis datas de avaliação, preservadas literalmente da fonte. As datas previstas não substituem o cronograma administrativo de abertura e encerramento das etapas.
+* O gerenciamento consulta a base do aplicativo, com as permissões existentes, sem conexão com Google Sheets. Alterações no arquivo Excel não são sincronizadas automaticamente: exigem nova importação. Documentos já salvos permanecem imutáveis.
 
 ---
 

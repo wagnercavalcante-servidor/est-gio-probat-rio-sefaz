@@ -15,6 +15,13 @@
       "when": 1793989722478,
       "tag": "0001_gatilhos_novo_usuario",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793991816264,
+      "tag": "0002_servidores_datas_avaliacoes_planilha",
+      "breakpoints": true
     }
   ]
 }

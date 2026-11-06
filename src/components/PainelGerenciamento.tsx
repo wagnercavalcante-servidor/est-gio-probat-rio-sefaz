@@ -4,23 +4,24 @@ import { useServerFn } from "@tanstack/react-start";
 import { Loader2, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { detalharOrgao, listarOrgaosPlanilha } from "@/lib/gerenciamento.functions";
+import { detalharOrgao, listarOrgaosBase } from "@/lib/gerenciamento.functions";
 
 function semAcento(s: string) {
   return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().trim();
 }
 
 export function PainelGerenciamento() {
-  const listar = useServerFn(listarOrgaosPlanilha);
+  const listar = useServerFn(listarOrgaosBase);
   const detalhar = useServerFn(detalharOrgao);
-  const [orgao, setOrgao] = useState("");
+  const [orgao, setOrgao] = useState("SEFAZ");
   const [busca, setBusca] = useState("");
   const [dataExercicio, setDataExercicio] = useState("todas");
 
-  const orgaos = useQuery({ queryKey: ["planilha-orgaos"], queryFn: () => listar(), staleTime: 300_000 });
+  const orgaos = useQuery({ queryKey: ["servidores-orgaos"], queryFn: () => listar(), staleTime: 300_000 });
   const detalhe = useQuery({
-    queryKey: ["planilha-orgao", orgao],
+    queryKey: ["servidores-orgao", orgao],
     queryFn: () => detalhar({ data: { orgao } }),
     enabled: !!orgao,
     staleTime: 300_000,
@@ -97,7 +98,7 @@ export function PainelGerenciamento() {
             </Select>
           </div>
         )}
-        {orgaos.error && <p className="text-sm text-destructive">Não foi possível ler a planilha.</p>}
+        {orgaos.error && <p className="text-sm text-destructive">Não foi possível carregar a base de servidores.</p>}
       </div>
 
       {orgao && detalhe.data && (
@@ -117,11 +118,12 @@ export function PainelGerenciamento() {
             <p className="mb-2 text-xs text-muted-foreground">Por data de efetivo exercício</p>
             <div className="max-h-32 space-y-1 overflow-y-auto pr-1">
               {porData.map(([d, qtd]) => (
-                <button
+                <Button
+                  variant="ghost"
                   key={d}
                   type="button"
                   onClick={() => setDataExercicio(dataExercicio === d ? "todas" : d)}
-                  className={`flex w-full items-center justify-between rounded px-2 py-1 text-left text-xs transition-colors ${
+                  className={`flex h-auto w-full items-center justify-between rounded px-2 py-1 text-left text-xs transition-colors ${
                     dataExercicio === d
                       ? "bg-primary text-primary-foreground"
                       : "text-foreground hover:bg-secondary"
@@ -129,7 +131,7 @@ export function PainelGerenciamento() {
                 >
                   <span>{d}</span>
                   <span className={dataExercicio === d ? "opacity-90" : "text-muted-foreground"}>{qtd}</span>
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -172,6 +174,7 @@ export function PainelGerenciamento() {
                   </tr>
                 </thead>
                 <tbody>
+                  {linhas.length === 0 && <tr><td colSpan={colunas.length} className="px-2 py-4 text-muted-foreground">Nenhum servidor encontrado.</td></tr>}
                   {linhas.map((l, i) => (
                     <tr key={i} className="border-t border-border">
                       {colunas.map((_, j) => (
