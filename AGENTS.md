@@ -15,3 +15,4 @@
 - The technical specification for the IT team lives in `docs/ESPECIFICACAO_TECNICA.md` and must be updated when features or rules change; why: it is the hand-off document for state implementation.
 - Assessment selectors and management read the same `servidores` database records; imported assessment dates are preserved as source data, not inferred legal deadlines, so both modules stay consistent without an external spreadsheet dependency.
 - FAPEP assessment-number selection resolves imported dates through the shared `servidores` helper; why: both evaluator forms must use identical source-date mapping without recalculation.
+- Transfer packages are produced by `scripts/preparar-entrega.py` with credentials, generated output and provisional shared-admin access excluded; why: institutional handoff must not redistribute the source environment's temporary access mechanism or imply a complete database bootstrap.
