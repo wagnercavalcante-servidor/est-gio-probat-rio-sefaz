@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatarData } from "@/lib/formularios";
 import { useSessao } from "@/hooks/useSessao";
+import type { ServidorBase } from "@/lib/servidores";
 
 export type Servidor = {
   id: string;
@@ -13,6 +14,7 @@ export type Servidor = {
   orgao: string;
   cargo: string | null;
   data_inicio_exercicio: string | null;
+  datas_avaliacoes: ServidorBase["datas_avaliacoes"];
 };
 
 export function ServidorSelect({ aoSelecionar }: { aoSelecionar: (s: Servidor) => void }) {
@@ -29,7 +31,7 @@ export function ServidorSelect({ aoSelecionar }: { aoSelecionar: (s: Servidor) =
     const timer = setTimeout(async () => {
       let consulta = supabase
         .from("servidores")
-        .select("id, nome, matricula, orgao, cargo, data_inicio_exercicio")
+        .select("id, nome, matricula, orgao, cargo, data_inicio_exercicio, datas_avaliacoes")
         .or(`nome.ilike.%${termo.trim()}%,matricula.ilike.%${termo.trim()}%`);
       if (orgao) consulta = consulta.eq("orgao", orgao);
       const { data } = await consulta.order("nome").limit(12);

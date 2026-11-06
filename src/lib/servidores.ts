@@ -12,6 +12,12 @@ export function dataServidorBr(data: string | null) {
   return ano && mes && dia ? `${dia}/${mes}/${ano}` : data;
 }
 
+export function dataAvaliacaoServidor(datas: ServidorBase["datas_avaliacoes"], numero: string): string {
+  if (!/^[1-6]$/.test(numero) || !Array.isArray(datas)) return "";
+  const data = datas[Number(numero) - 1];
+  return dataServidorBr(typeof data === "string" ? data : null);
+}
+
 export function linhaServidor(s: ServidorBase): string[] {
   const datas = Array.isArray(s.datas_avaliacoes) ? s.datas_avaliacoes : [];
   return [s.orgao, s.nome, s.matricula, dataServidorBr(s.data_inicio_exercicio), s.cargo ?? "",

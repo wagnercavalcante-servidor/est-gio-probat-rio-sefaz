@@ -110,6 +110,7 @@ Gerido pela Gestão de Pessoas ou pelo Administrador, define as janelas de abert
 
 * **FAPEP 1 – Chefia Imediata**: identificação (nome, matrícula, cargo, órgão, lotação, período); requisitos, critérios, descrição legal do critério, nota; campo opcional *Considerações/Justificativa/Feedback*; total e percentual automáticos; assinatura no campo "Assinatura do Chefe Imediato". Salvar, baixar e assinar ficam bloqueados até que todos os campos obrigatórios estejam preenchidos. O PDF não traz a parte da comissão antes da homologação.
 * **FAPEP 2 – Pares**: mesma estrutura, com número do par avaliador.
+* **Número e data da avaliação (FAPEP 1/2)**: menu suspenso com as avaliações 1 a 6; ao escolher o número, o campo Data do avaliador recebe a data correspondente na base importada do servidor. Trocar o servidor atualiza essa data mantendo o número selecionado; selecionar o número antes do servidor também é suportado. Datas ausentes ficam vazias, sem cálculo substitutivo. Os campos de período e a data/hora efetiva da assinatura não são alterados por esse preenchimento.
 * **FAFEP – Avaliação Final**: consolida as avaliações do período e emite parecer *Aprovado* ou *Não Aprovado*.
 * **RAEP – Recurso**: razões do servidor, critérios contestados, anexos, deliberação fundamentada da comissão.
 * **FADA – Acompanhamento e Desenvolvimento**: ocorrências, orientações, planos de alinhamento e capacitações.

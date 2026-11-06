@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { REQUISITOS, PONTUACAO_MAXIMA, formatarData, somaNotas } from "@/lib/formularios";
 import { useEtapaVigente } from "@/hooks/useEtapaVigente";
 import { dentroDaJanela, formatarDataBr } from "@/lib/calendario";
+import { dataAvaliacaoServidor } from "@/lib/servidores";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const estadoInicial = {
   identificacao: { matricula: "", nome: "", dataInicio: "", cargo: "", orgao: "", setor: "" },
@@ -23,6 +25,18 @@ const estadoInicial = {
 
 export function FormFapep({ tipo }: { tipo: "FAPEP1" | "FAPEP2" }) {
   const [d, setD] = useState(structuredClone(estadoInicial));
+  const [servidorSelecionado, setServidorSelecionado] = useState<Servidor | null>(null);
+
+  const selecionarNumero = (numero: string) => {
+    setD((anterior) => ({
+      ...anterior,
+      numeroAvaliacao: numero,
+      avaliador: {
+        ...anterior.avaliador,
+        data: dataAvaliacaoServidor(servidorSelecionado?.datas_avaliacoes ?? [], numero),
+      },
+    }));
+  };
 
   const atualizar = (caminho: string, valor: string) => {
     setD((anterior) => {
@@ -41,8 +55,10 @@ export function FormFapep({ tipo }: { tipo: "FAPEP1" | "FAPEP2" }) {
   };
 
   const selecionarServidor = (s: Servidor) => {
+    setServidorSelecionado(s);
     setD((a) => ({
       ...a,
+      avaliador: { ...a.avaliador, data: dataAvaliacaoServidor(s.datas_avaliacoes, a.numeroAvaliacao) },
       identificacao: {
         ...a.identificacao,
         nome: s.nome,
@@ -90,7 +106,19 @@ export function FormFapep({ tipo }: { tipo: "FAPEP1" | "FAPEP2" }) {
 
         <Bloco titulo={tipo === "FAPEP1" ? "Dados da avaliação (chefe imediato)" : "Dados da avaliação (par)"}>
           <div className="grid gap-3 sm:grid-cols-3">
-            <CampoTexto rotulo="Número da avaliação" valor={d.numeroAvaliacao} aoMudar={(v) => atualizar("numeroAvaliacao", v)} placeholder="1 a 6" />
+            <div>
+              <Label htmlFor={`numero-avaliacao-${tipo}`} className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Número da avaliação</Label>
+              <Select value={d.numeroAvaliacao} onValueChange={selecionarNumero}>
+                <SelectTrigger id={`numero-avaliacao-${tipo}`} className="mt-1 w-full">
+                  <SelectValue placeholder="Selecione a avaliação" />
+                </SelectTrigger>
+                <SelectContent>
+                  {[1, 2, 3, 4, 5, 6].map((numero) => (
+                    <SelectItem key={numero} value={String(numero)}>{numero}ª avaliação</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <CampoTexto rotulo="Período de" valor={d.periodoInicio} aoMudar={(v) => atualizar("periodoInicio", v)} placeholder="dd/mm/aaaa" />
             <CampoTexto rotulo="Período até" valor={d.periodoFim} aoMudar={(v) => atualizar("periodoFim", v)} placeholder="dd/mm/aaaa" />
             {tipo === "FAPEP2" && (
